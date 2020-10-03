@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import { Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { addEditUsers } from '../actions/autorActions';
+import { addEdit } from '../actions/autorActions';
 import { TextField, Button } from '@material-ui/core';
 
 import SnackBar from './SnackBar';
@@ -15,25 +15,25 @@ class AddEditAutor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: {
-        id: this.props.location.state && this.props.location.state.user ? this.props.location.state.user.id : null,
-        name: this.props.location.state && this.props.location.state.user ? this.props.location.state.user.name : '',
-        email: this.props.location.state && this.props.location.state.user ? this.props.location.state.user.email : '',
-        phone: this.props.location.state && this.props.location.state.user ? this.props.location.state.user.phone : '',
-        website: this.props.location.state && this.props.location.state.user ? this.props.location.state.user.website : '',
-        edit: this.props.location.state && this.props.location.state.user ? this.props.location.state.edit : false
+      autor: {
+        id: this.props.location.state && this.props.location.state.autor ? this.props.location.state.autor.id : null,
+        name: this.props.location.state && this.props.location.state.autor ? this.props.location.state.autor.name : '',
+        email: this.props.location.state && this.props.location.state.autor ? this.props.location.state.autor.email : '',
+        sexo: this.props.location.state && this.props.location.state.autor ? this.props.location.state.autor.phone : '',
+        dataNascimento: this.props.location.state && this.props.location.state.autor ? this.props.location.state.autor.website : '',
+        pais: this.props.location.state && this.props.location.state.autor ? this.props.location.state.autor.website : '',
+        cpf: this.props.location.state && this.props.location.state.autor ? this.props.location.state.autor.website : '',
+        edit: this.props.location.state && this.props.location.state.autor ? this.props.location.state.edit : false
       },
       open: false
     };
-    this.handleClose = this.handleClose.bind(this);
-    this.handleOpen = this.handleOpen.bind(this);
   }
 
-  handleOpen() {
+  handleOpen = () => {
     this.setState({ open: true });
   }
 
-  handleClose(event, reason){
+  handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
@@ -45,23 +45,22 @@ class AddEditAutor extends Component {
       <Route render={ ({history}) => (
         <div>
           <Formik
-          initialValues={this.state.user}
+          initialValues={this.state.autor}
           onSubmit={(values, actions) => {
             setTimeout(() => {
               history.push('/');
-              this.state.user.id ? this.props.addNewUser([{...values, id: this.state.user.id }]) : this.props.addNewUser([values])
+              this.state.autor.id ? this.props.addNew([{...values, id: this.state.autor.id }]) : this.props.addNew([values])
             }, 100);
           }}
           validationSchema={Yup.object().shape({
-            name: Yup.string().required('Name field is required'),
+            name: Yup.string().required('Nome é obrigatório'),
             email: Yup.string()
               .email('Email not valid')
-              .required('Email field is required'),
-            phone: Yup.string()
-              .required('Phone field is required')
-              .max(10)
-              .min(10),
-            website: Yup.string().notRequired()
+              .required('E-mail é obrigatório'),
+            pais: Yup.string().required('País de origem é obrigatório'),
+            dataNascimento: Yup.string()
+              .required('Data de nascimento é obrigatório'),
+            cpf: Yup.string().required('CPF é obrigatório'),
           })}
         >
           {props => {
@@ -100,7 +99,27 @@ class AddEditAutor extends Component {
                     {errors.name}
                   </div>
                 )}
-  
+
+                <TextField
+                id="standard-sexo"
+                type="text"
+                name="sexo"
+                label="Sexo"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.sexo}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                />
+                {errors.sexo && touched.sexo && (
+                  <div
+                    style={{ textAlign: 'start', marginTop: '2px', color: 'red' }}
+                  >
+                    {errors.sexo}
+                  </div>
+                )}
+
                 <TextField
                   id="standard-email"
                   type="email"
@@ -123,43 +142,65 @@ class AddEditAutor extends Component {
                 )}
   
                 <TextField
-                  id="standard-phone"
+                  id="standard-nascimento"
                   type="text"
-                  name="phone"
-                  label="Phone Number"
+                  name="dataNascimento"
+                  label="Data de Nascimento"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.phone}
+                  value={values.dataNascimento}
                   fullWidth
                   margin="normal"
                   variant="outlined"
                   required
                 />
-                {errors.phone && touched.phone && (
+                {errors.dataNascimento && touched.dataNascimento && (
                   <div
                     style={{ textAlign: 'start', marginTop: '2px', color: 'red' }}
                   >
-                    {errors.phone}
+                    {errors.dataNascimento}
                   </div>
                 )}
   
                 <TextField
-                  id="standard-website"
+                  id="standard-pais"
                   type="text"
-                  name="website"
-                  label="Website"
+                  name="pais"
+                  label="Pais de origem"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.website}
+                  value={values.pais}
                   fullWidth
                   margin="normal"
                   variant="outlined"
+                  required
                 />
-                {errors.website && touched.website && (
+                {errors.pais && touched.pais && (
                   <div
                     style={{ textAlign: 'start', marginTop: '2px', color: 'red' }}
                   >
-                    {errors.website}
+                    {errors.pais}
+                  </div>
+                )}
+
+                <TextField
+                  id="standard-cpf"
+                  type="text"
+                  name="cpf"
+                  label="CPF"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.cpf}
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  required
+                />
+                {errors.cpf && touched.cpf && (
+                  <div
+                    style={{ textAlign: 'start', marginTop: '2px', color: 'red' }}
+                  >
+                    {errors.cpf}
                   </div>
                 )}
   
@@ -170,7 +211,7 @@ class AddEditAutor extends Component {
                   color="primary"
                   style={{ margin: '1em', float: 'right' }}
                 >
-                  {this.state.user.edit ? 'Atualizar' : 'Salvar'}
+                  {this.state.autor.edit ? 'Atualizar' : 'Salvar'}
                 </Button>
               </form>
             );
@@ -180,7 +221,7 @@ class AddEditAutor extends Component {
           open={this.state.open}
           handleClose={this.handleClose}
           variant="success"
-          message="User Created Successfully"
+          message="Autor criado com sucesso"
         />
       </div>
       )} />
@@ -189,7 +230,7 @@ class AddEditAutor extends Component {
 }
 
 AddEditAutor.propTypes = {
-  addNewUser: PropTypes.func,
+  addNew: PropTypes.func,
   snackBarMessage: PropTypes.string,
   snackBarVariant: PropTypes.string
 };
@@ -201,5 +242,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { addNewUser: addEditUsers }
+  { addNew: addEdit }
 )(AddEditAutor);

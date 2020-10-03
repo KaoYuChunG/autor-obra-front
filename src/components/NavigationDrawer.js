@@ -26,7 +26,8 @@ import AddEditObra from './AddEditObra';
 
 import { Route, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { fetchUsers } from '../actions/autorActions';
+import { fetchAutores } from '../actions/autorActions';
+import { fetchObras } from '../actions/obraActions';
 
 const drawerWidth = 240;
 
@@ -76,7 +77,8 @@ export const icone = index => {
 
 function NavigationDrawer(props) {
   const { container } = props;
-  props.fetchUsers();
+  props.fetchAutores();
+  props.fetchObras();
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -164,7 +166,8 @@ function NavigationDrawer(props) {
 
 NavigationDrawer.propTypes = {
   container: PropTypes.object,
-  fetchUsers: PropTypes.func.isRequired
+  fetchAutores: PropTypes.func.isRequired,
+  fetchObras: PropTypes.func.isRequired
 };
 
-export default connect(null, { fetchUsers })(NavigationDrawer);
+export default connect(null, { fetchAutores, fetchObras })(NavigationDrawer);

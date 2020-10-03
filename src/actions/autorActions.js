@@ -1,44 +1,47 @@
 import { FETCH_AUTOR, ADD_AUTOR, EDIT_AUTOR, DELETE_AUTOR } from "./types";
 
-export const fetchUsers = () => dispatch => {
-    fetch('localhost:8080/api/autor')
+export const fetchAutores = () => dispatch => {
+    // fetch('localhost:8080/api/autor')
+    fetch('https://jsonplaceholder.typicode.com/users')
     .then(res => res.json())
-    .then(users => {
-        users = users.map(user => {
-            const { id, name, email, phone, website } = user;
+    .then(autores => {
+        autores = autores.map(autor => {
+            const { id, name, email, sexo, pais, dataNascimento, cpf } = autor;
             return {
                 id,
                 name,
                 email,
-                phone,
-                website
+                sexo,
+                pais,
+                dataNascimento,
+                cpf
             };
         });
         dispatch({
             type: FETCH_AUTOR,
-            payload: users
+            payload: autores
         });
     })
     .catch(err => console.log(err));
 };
 
-export const addEditUsers = (userData) => dispatch => {
-    if (!userData[0].edit) {
+export const addEdit = (data) => dispatch => {
+    if (!data[0].edit) {
         dispatch({
             type: ADD_AUTOR,
-            payload: userData
+            payload: data
         });
     } else {
         dispatch({
             type: EDIT_AUTOR,
-            payload: userData
+            payload: data
         });
     }
 };
 
-export const removeUsers = (usersNameArr) => dispatch => {
+export const removeAutor = (autorNameArr) => dispatch => {
     dispatch({
         type: DELETE_AUTOR,
-        payload: usersNameArr 
+        payload: autorNameArr 
     });
 };

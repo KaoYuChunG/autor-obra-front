@@ -1,7 +1,7 @@
 import { FETCH_OBRA, ADD_OBRA, EDIT_OBRA, DELETE_OBRA } from "../actions/types";
 
 const initialState = {
-    allUsers: [],
+    all: [],
     message: "Default",
     variant: "success"
 };
@@ -11,27 +11,27 @@ export default function(state = initialState, action) {
         case FETCH_OBRA:
             return {
                 ...state,
-                allUsers: action.payload
+                all: action.payload
             }
         case ADD_OBRA:
             return {
                 ...state,
-                newUsers: action.payload,
-                message: "New Users Added",
+                new: action.payload,
+                message: "Obra criado com sucesso",
                 variant: "success"
             }
         case EDIT_OBRA:
             return {
                 ...state,
-                editUsers: action.payload,
-                message: "Users Edited Successfully",
+                edit: action.payload,
+                message: "Obra atualizado com sucesso",
                 variant: "info"
             }
         case DELETE_OBRA:
             return {
                 ...state,
-                deleteUsers: action.payload,
-                message: "User Deleted Successfully",
+                delete: action.payload,
+                message: "Obra deletado com sucesso",
                 variant: "error"
             }
         default:

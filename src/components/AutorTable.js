@@ -25,41 +25,18 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import EditIcon from '@material-ui/icons/Edit';
 
 import { Link } from 'react-router-dom';
-import { removeUsers } from '../actions/autorActions';
+import { removeAutor } from '../actions/autorActions';
 import { showSnackBar } from '../actions/utilActions';
-
-function desc(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function stableSort(array, cmp) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = cmp(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map(el => el[0]);
-}
-
-function getSorting(order, orderBy) {
-  return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
-}
+import { isNotEmpty, stableSort, getSorting } from '../utils/utils';
 
 const headRows = [
-  { id: 'id', numeric: true, disablePadding: true, label: 'ID' },
-  { id: 'nome', numeric: false, disablePadding: false, label: 'Nome' },
+  { id: 'id', numeric: false, disablePadding: true, label: 'ID' },
+  { id: 'nome', numeric: false, disablePadding: true, label: 'Nome' },
   { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
   { id: 'sexo', numeric: false, disablePadding: false, label: 'Sexo' },
   { id: 'cpf', numeric: false, disablePadding: false, label: 'CPF' },
   { id: 'dataNascimento', numeric: false, disablePadding: false, label: 'Data de nascimento' },
-  { id: 'paisOrigem', numeric: false, disablePadding: false, label: 'País de origem' },
+  { id: 'paisOrigem', numeric: false, disablePadding: false, label: 'País' },
   { id: 'acao', numeric: false, disablePadding: false, label: 'Ação' },
 ];
 
@@ -142,7 +119,7 @@ const EnhancedTableToolbar = props => {
   const numSelected = selected.length;
 
   function handleDelete() {
-    props.removeUserCallback(selected);
+    props.removeAutorCallback(selected);
   }
 
   return (
@@ -154,7 +131,7 @@ const EnhancedTableToolbar = props => {
       <div className={classes.title}>
         {numSelected > 0 ? (
           <Typography color="inherit" variant="subtitle1">
-            {numSelected} selected
+            {numSelected} selecionado
           </Typography>
         ) : (
           <Typography variant="h6" id="tableTitle">
@@ -171,8 +148,8 @@ const EnhancedTableToolbar = props => {
             </IconButton>
           </Tooltip>
         ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="filter list">
+          <Tooltip title="Filtro">
+            <IconButton aria-label="Filtro">
               <FilterListIcon />
             </IconButton>
           </Tooltip>
@@ -220,29 +197,29 @@ function ExtendedDataTable(props) {
     setOpen(true);
   }
 
-  if (props.newUsers && props.newUsers.length > 0) {
-    const usersID = props.users.map(user => +user.id);
-    let largest = Math.max(...usersID);
-    const newUsers = props.newUsers.map((user, index) => {
-      return { ...user, id: ++largest}
+  if (isNotEmpty(props.newAutor)) {
+    const autorID = props.autores.map(autor => +autor.id);
+    let largest = Math.max(...autorID);
+    const newAutor = props.newAutor.map((autor, index) => {
+      return { ...autor, id: ++largest}
     })
-    props.users.unshift(...newUsers);
-    props.newUsers.splice(0);
+    props.autores.unshift(...newAutor);
+    props.newAutor.splice(0);
     handleOpen();
-  } else if(props.editUsers && props.editUsers.length > 0) {
-    props.editUsers.forEach(editUser => {
-      props.users.splice(props.users.findIndex(user => 
-        user.id === editUser.id), 1, editUser);
+  } else if(isNotEmpty(props.editAutor)) {
+    props.editAutor.forEach(editAutor => {
+      props.autores.splice(props.autores.findIndex(autor => 
+        autor.id === editAutor.id), 1, editAutor);
     })
-    props.editUsers.splice(0);
+    props.editAutor.splice(0);
     handleOpen();
-  } else if (props.deleteUsers && props.deleteUsers.length > 0) {
-    props.deleteUsers.forEach(delUser => {
-      props.users.splice(props.users.findIndex(user => 
-        user.name === delUser), 1);
+  } else if (isNotEmpty(props.deleteAutor)) {
+    props.deleteAutor.forEach(delAutor => {
+      props.autores.splice(props.autores.findIndex(autor => 
+        autor.name === delAutor), 1);
     })
     selected.splice(0);
-    props.deleteUsers.splice(0);
+    props.deleteAutor.splice(0);
     handleOpen();
   }
 
@@ -253,8 +230,8 @@ function ExtendedDataTable(props) {
     setOpen(false);
   };
 
-  function handleUsersDelete(usersNameArr) {
-    props.removeUsers(usersNameArr);
+  function handleAutorDelete(autorNameArr) {
+    props.removeAutor(autorNameArr);
   }
 
   function handleRequestSort(event, property) {
@@ -265,7 +242,7 @@ function ExtendedDataTable(props) {
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
-      const newSelection = props.users.map(n => n.name);
+      const newSelection = props.autores.map(n => n.name);
       setSelected(newSelection);
       return;
     }
@@ -303,12 +280,12 @@ function ExtendedDataTable(props) {
 
   const isSelected = name => selected.indexOf(name) !== -1;
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.users.length - page * rowsPerPage);
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.autores.length - page * rowsPerPage);
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar selected={selected} removeUserCallback={handleUsersDelete} />
+        <EnhancedTableToolbar selected={selected} removeAutorCallback={handleAutorDelete} />
         <div className={classes.tableWrapper}>
           <Table
             className={classes.table}
@@ -321,10 +298,10 @@ function ExtendedDataTable(props) {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={props.users.length}
+              rowCount={props.autores.length}
             />
             <TableBody>
-              {stableSort(props.users, getSorting(order, orderBy))
+              {stableSort(props.autores, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.name);
@@ -351,15 +328,15 @@ function ExtendedDataTable(props) {
                       </TableCell>
                       <TableCell align="left">{row.name}</TableCell>
                       <TableCell align="left">{row.email}</TableCell>
-                      <TableCell align="left">{row.email}</TableCell>
-                      <TableCell align="left">{row.email}</TableCell>
-                      <TableCell align="left">{row.phone}</TableCell>
-                      <TableCell align="left">{row.website}</TableCell>
+                      <TableCell align="left">{row.sexo}</TableCell>
+                      <TableCell align="left">{row.cpf}</TableCell>
+                      <TableCell align="left">{row.dataNascimento}</TableCell>
+                      <TableCell align="left">{row.pais}</TableCell>
                       <TableCell align="center">
                         <Link to={{
                           pathname: '/add-edit-autor',
                           state: {
-                            user: row,
+                            autor: row,
                             edit: true
                           }
                         }}>
@@ -382,7 +359,7 @@ function ExtendedDataTable(props) {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={props.users.length}
+          count={props.autores.length}
           rowsPerPage={rowsPerPage}
           page={page}
           backIconButtonProps={{
@@ -406,23 +383,23 @@ function ExtendedDataTable(props) {
 }
 
 ExtendedDataTable.propTypes = {
-    users: PropTypes.array.isRequired,
-    newUsers: PropTypes.array,
-    editUsers: PropTypes.array,
-    deleteUsers: PropTypes.array,
-    removeUsers: PropTypes.func,
+    autores: PropTypes.array.isRequired,
+    newAutor: PropTypes.array,
+    editAutor: PropTypes.array,
+    deleteAutor: PropTypes.array,
+    removeAutor: PropTypes.func,
     showSnackBar: PropTypes.func,
     snackBarMessage: PropTypes.string,
     snackBarVariant: PropTypes.string
 }
 
 const mapStateToProps = state => ({
-    users: state.autores.allUsers,
-    newUsers: state.autores.newUsers,
-    editUsers: state.autores.editUsers,
-    deleteUsers: state.autores.deleteUsers,
+    autores: state.autores.all,
+    newAutor: state.autores.new,
+    editAutor: state.autores.edit,
+    deleteAutor: state.autores.delete,
     snackBarMessage: state.autores.message,
     snackBarVariant: state.autores.variant
 });
 
-export default connect(mapStateToProps, { removeUsers, showSnackBar })(ExtendedDataTable);
+export default connect(mapStateToProps, { removeAutor, showSnackBar })(ExtendedDataTable);

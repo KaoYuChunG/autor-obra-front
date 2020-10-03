@@ -1,17 +1,17 @@
 import { FETCH_OBRA, ADD_OBRA, EDIT_OBRA, DELETE_OBRA } from "./types";
 
-export const fetchUsers = () => dispatch => {
-    fetch('https://jsonplaceholder.typicode.com/users')
+export const fetchObras = () => dispatch => {
+    fetch('localhost:8080/api/obra')
     .then(res => res.json())
     .then(users => {
         users = users.map(user => {
-            const { id, name, email, phone, website } = user;
+            const { id, name, descricao, dataPublicacao, dataExposicao } = user;
             return {
                 id,
                 name,
-                email,
-                phone,
-                website
+                descricao,
+                dataPublicacao,
+                dataExposicao
             };
         });
         dispatch({
@@ -22,23 +22,24 @@ export const fetchUsers = () => dispatch => {
     .catch(err => console.log(err));
 };
 
-export const addEditUsers = (userData) => dispatch => {
-    if (!userData[0].edit) {
+export const addEdit = (data) => dispatch => {
+   
+    if (!data[0].edit) {
         dispatch({
             type: ADD_OBRA,
-            payload: userData
+            payload: data
         });
     } else {
         dispatch({
             type: EDIT_OBRA,
-            payload: userData
+            payload: data
         });
     }
 };
 
-export const removeUsers = (usersNameArr) => dispatch => {
+export const removeObras = (obraNameArr) => dispatch => {
     dispatch({
         type: DELETE_OBRA,
-        payload: usersNameArr 
+        payload: obraNameArr 
     });
 };

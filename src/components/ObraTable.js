@@ -25,35 +25,12 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import EditIcon from '@material-ui/icons/Edit';
 
 import { Link } from 'react-router-dom';
-import { removeUsers } from '../actions/obraActions';
+import { removeObras } from '../actions/obraActions';
 import { showSnackBar } from '../actions/utilActions';
-
-function desc(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function stableSort(array, cmp) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = cmp(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map(el => el[0]);
-}
-
-function getSorting(order, orderBy) {
-  return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
-}
+import { isNotEmpty, stableSort, getSorting } from '../utils/utils';
 
 const headRows = [
-  { id: 'id', numeric: true, disablePadding: true, label: 'ID' },
+  { id: 'id', numeric: false, disablePadding: false, label: 'ID' },
   { id: 'nome', numeric: false, disablePadding: false, label: 'Nome' },
   { id: 'descricao', numeric: false, disablePadding: false, label: 'Descrição' },
   { id: 'dataPublicacao', numeric: false, disablePadding: false, label: 'Data de publicação' },
@@ -140,7 +117,7 @@ const EnhancedTableToolbar = props => {
   const numSelected = selected.length;
 
   function handleDelete() {
-    props.removeUserCallback(selected);
+    props.removeObraCallback(selected);
   }
 
   return (
@@ -169,8 +146,8 @@ const EnhancedTableToolbar = props => {
             </IconButton>
           </Tooltip>
         ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="filter list">
+          <Tooltip title="Filtro">
+            <IconButton aria-label="Filtro">
               <FilterListIcon />
             </IconButton>
           </Tooltip>
@@ -218,29 +195,29 @@ function ExtendedDataTable(props) {
     setOpen(true);
   }
 
-  if (props.newUsers && props.newUsers.length > 0) {
-    const usersID = props.users.map(user => +user.id);
-    let largest = Math.max(...usersID);
-    const newUsers = props.newUsers.map((user, index) => {
-      return { ...user, id: ++largest}
+  if (isNotEmpty(props.new)) {
+    const obraID = props.obras.map(obra => +obra.id);
+    let largest = Math.max(...obraID);
+    const newObra = props.new.map((obra, index) => {
+      return { ...obra, id: ++largest}
     })
-    props.users.unshift(...newUsers);
-    props.newUsers.splice(0);
+    props.obras.unshift(...newObra);
+    props.new.splice(0);
     handleOpen();
-  } else if(props.editUsers && props.editUsers.length > 0) {
-    props.editUsers.forEach(editUser => {
-      props.users.splice(props.users.findIndex(user => 
-        user.id === editUser.id), 1, editUser);
+  } else if(isNotEmpty(props.edit)) {
+    props.edit.forEach(editObra => {
+      props.obras.splice(props.obras.findIndex(obra => 
+        obra.id === editObra.id), 1, editObra);
     })
-    props.editUsers.splice(0);
+    props.edit.splice(0);
     handleOpen();
-  } else if (props.deleteUsers && props.deleteUsers.length > 0) {
-    props.deleteUsers.forEach(delUser => {
-      props.users.splice(props.users.findIndex(user => 
-        user.name === delUser), 1);
+  } else if (isNotEmpty(props.delete)) {
+    props.delete.forEach(delObra => {
+      props.obras.splice(props.obras.findIndex(obra => 
+        obra.name === delObra), 1);
     })
     selected.splice(0);
-    props.deleteUsers.splice(0);
+    props.delete.splice(0);
     handleOpen();
   }
 
@@ -251,8 +228,8 @@ function ExtendedDataTable(props) {
     setOpen(false);
   };
 
-  function handleUsersDelete(usersNameArr) {
-    props.removeUsers(usersNameArr);
+  function handleObraDelete(obraNameArr) {
+    props.removeObras(obraNameArr);
   }
 
   function handleRequestSort(event, property) {
@@ -263,7 +240,7 @@ function ExtendedDataTable(props) {
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
-      const newSelection = props.users.map(n => n.name);
+      const newSelection = props.obras.map(n => n.name);
       setSelected(newSelection);
       return;
     }
@@ -301,12 +278,12 @@ function ExtendedDataTable(props) {
 
   const isSelected = name => selected.indexOf(name) !== -1;
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.users.length - page * rowsPerPage);
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.obras.length - page * rowsPerPage);
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar selected={selected} removeUserCallback={handleUsersDelete} />
+        <EnhancedTableToolbar selected={selected} removeObraCallback={handleObraDelete} />
         <div className={classes.tableWrapper}>
           <Table
             className={classes.table}
@@ -319,10 +296,10 @@ function ExtendedDataTable(props) {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={props.users.length}
+              rowCount={props.obras.length}
             />
             <TableBody>
-              {stableSort(props.users, getSorting(order, orderBy))
+              {stableSort(props.obras, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.name);
@@ -348,14 +325,14 @@ function ExtendedDataTable(props) {
                         {row.id}
                       </TableCell>
                       <TableCell align="left">{row.name}</TableCell>
-                      <TableCell align="left">{row.email}</TableCell>
-                      <TableCell align="left">{row.phone}</TableCell>
-                      <TableCell align="left">{row.website}</TableCell>
+                      <TableCell align="left">{row.descricao}</TableCell>
+                      <TableCell align="left">{row.dataPublicacao}</TableCell>
+                      <TableCell align="left">{row.dataExposicao}</TableCell>
                       <TableCell align="center">
                         <Link to={{
                           pathname: '/add-edit-obra',
                           state: {
-                            user: row,
+                            obra: row,
                             edit: true
                           }
                         }}>
@@ -378,7 +355,7 @@ function ExtendedDataTable(props) {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={props.users.length}
+          count={props.obras.length}
           rowsPerPage={rowsPerPage}
           page={page}
           backIconButtonProps={{
@@ -402,23 +379,23 @@ function ExtendedDataTable(props) {
 }
 
 ExtendedDataTable.propTypes = {
-    users: PropTypes.array.isRequired,
-    newUsers: PropTypes.array,
-    editUsers: PropTypes.array,
-    deleteUsers: PropTypes.array,
-    removeUsers: PropTypes.func,
+    obras: PropTypes.array.isRequired,
+    new: PropTypes.array,
+    edit: PropTypes.array,
+    delete: PropTypes.array,
+    remove: PropTypes.func,
     showSnackBar: PropTypes.func,
     snackBarMessage: PropTypes.string,
     snackBarVariant: PropTypes.string
 }
 
 const mapStateToProps = state => ({
-    users: state.autores.allUsers,
-    newUsers: state.autores.newUsers,
-    editUsers: state.autores.editUsers,
-    deleteUsers: state.autores.deleteUsers,
-    snackBarMessage: state.autores.message,
-    snackBarVariant: state.autores.variant
+    obras: state.obras.all,
+    new: state.obras.new,
+    edit: state.obras.edit,
+    delete: state.obras.delete,
+    snackBarMessage: state.obras.message,
+    snackBarVariant: state.obras.variant
 });
 
-export default connect(mapStateToProps, { removeUsers, showSnackBar })(ExtendedDataTable);
+export default connect(mapStateToProps, { removeObras, showSnackBar })(ExtendedDataTable);
