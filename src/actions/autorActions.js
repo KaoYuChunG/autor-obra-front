@@ -1,8 +1,7 @@
 import { FETCH_AUTOR, ADD_AUTOR, EDIT_AUTOR, DELETE_AUTOR } from "./types";
 
 export const fetchAutores = () => dispatch => {
-    // fetch('localhost:8080/api/autor')
-    fetch('https://jsonplaceholder.typicode.com/users')
+    fetch('localhost:8080/api/autor')
     .then(res => res.json())
     .then(autores => {
         autores = autores.map(autor => {
