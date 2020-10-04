@@ -155,7 +155,7 @@ class AddEditAutor extends Component {
   
                 <TextField
                   id="standard-nascimento"
-                  type="text"
+                  type="date"
                   name="dataNascimento"
                   label="Data de Nascimento"
                   onChange={handleChange}
@@ -165,6 +165,10 @@ class AddEditAutor extends Component {
                   margin="normal"
                   variant="outlined"
                   required
+                  format={'DD/MM/YYYY'}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
                 />
                 {errors.dataNascimento && touched.dataNascimento && (
                   <div
@@ -207,7 +211,6 @@ class AddEditAutor extends Component {
                   variant="outlined"
                   required
                   />)}
-               
                 {errors.cpf && touched.cpf && (
                   <div
                     style={{ textAlign: 'start', marginTop: '2px', color: 'red' }}

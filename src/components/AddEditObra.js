@@ -121,7 +121,7 @@ class AddEditObra extends Component {
   
                 <TextField
                   id="standard-dataPublicacao"
-                  type="text"
+                  type="date"
                   name="dataPublicacao"
                   label="Data de Publicação"
                   onChange={handleChange}
@@ -131,6 +131,10 @@ class AddEditObra extends Component {
                   margin="normal"
                   variant="outlined"
                   required
+                  format={'DD/MM/YYYY'}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
                 />
                 {errors.dataPublicacao && touched.dataPublicacao && (
                   <div
@@ -142,7 +146,7 @@ class AddEditObra extends Component {
   
                 <TextField
                   id="standard-dataExposicao"
-                  type="text"
+                  type="date"
                   name="dataExposicao"
                   label="Data de Exposição"
                   onChange={handleChange}
@@ -152,6 +156,10 @@ class AddEditObra extends Component {
                   margin="normal"
                   variant="outlined"
                   required
+                  format={'DD/MM/YYYY'}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
                 />
                 {errors.dataExposicao && touched.dataExposicao && (
                   <div
