@@ -8,8 +8,20 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { addEdit } from '../actions/autorActions';
 import { TextField, Button } from '@material-ui/core';
+import { isBrasil, sexo } from '../utils/utils';
 
 import SnackBar from './SnackBar';
+
+const schema = Yup.object().shape({
+  name: Yup.string().max(100).required('Nome é obrigatório'),
+  email: Yup.string()
+    .email('E-mail não válido')
+    .required('E-mail é obrigatório'),
+  pais: Yup.string().max(30).required('País de origem é obrigatório'),
+  dataNascimento: Yup.string()
+    .max(20)
+    .required('Data de nascimento é obrigatório')
+});
 
 class AddEditAutor extends Component {
   constructor(props) {
@@ -52,16 +64,7 @@ class AddEditAutor extends Component {
               this.state.autor.id ? this.props.addNew([{...values, id: this.state.autor.id }]) : this.props.addNew([values])
             }, 100);
           }}
-          validationSchema={Yup.object().shape({
-            name: Yup.string().required('Nome é obrigatório'),
-            email: Yup.string()
-              .email('Email not valid')
-              .required('E-mail é obrigatório'),
-            pais: Yup.string().required('País de origem é obrigatório'),
-            dataNascimento: Yup.string()
-              .required('Data de nascimento é obrigatório'),
-            cpf: Yup.string().required('CPF é obrigatório'),
-          })}
+          validationSchema={schema}
         >
           {props => {
             const {
@@ -101,17 +104,26 @@ class AddEditAutor extends Component {
                 )}
 
                 <TextField
-                id="standard-sexo"
-                type="text"
-                name="sexo"
-                label="Sexo"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.sexo}
-                fullWidth
-                margin="normal"
-                variant="outlined"
-                />
+                  id="standard-sexo"
+                  select
+                  name="sexo"
+                  label="Sexo"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.sexo}
+                  SelectProps={{
+                    native: true,
+                  }}
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  >
+                  {sexo.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </TextField>
                 {errors.sexo && touched.sexo && (
                   <div
                     style={{ textAlign: 'start', marginTop: '2px', color: 'red' }}
@@ -182,10 +194,9 @@ class AddEditAutor extends Component {
                     {errors.pais}
                   </div>
                 )}
-
-                <TextField
+                {isBrasil(values.pais) && (
+                  <TextField
                   id="standard-cpf"
-                  type="text"
                   name="cpf"
                   label="CPF"
                   onChange={handleChange}
@@ -195,7 +206,8 @@ class AddEditAutor extends Component {
                   margin="normal"
                   variant="outlined"
                   required
-                />
+                  />)}
+               
                 {errors.cpf && touched.cpf && (
                   <div
                     style={{ textAlign: 'start', marginTop: '2px', color: 'red' }}

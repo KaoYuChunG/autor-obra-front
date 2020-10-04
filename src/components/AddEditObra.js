@@ -47,7 +47,6 @@ class AddEditObra extends Component {
           onSubmit={(values, actions) => {
             setTimeout(() => {
               history.push('/obras');
-              console.log('values', values)
               this.state.obra.id ? this.props.addNew([{...values, id: this.state.obra.id }]) : this.props.addNew([values])
             }, 100);
           }}

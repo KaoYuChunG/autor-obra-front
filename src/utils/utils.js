@@ -17,6 +17,21 @@ export function stableSort(array, cmp) {
     return stabilizedThis.map(el => el[0]);
 }
 
+export function isBrasil(pais) {
+    return pais && pais === "Brasil"
+}
+
+export const sexo = [
+    {
+      value: 'M',
+      label: 'Masculino',
+    },
+    {
+      value: 'F',
+      label: 'Feminino',
+    },
+];
+
 function desc(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -26,4 +41,6 @@ function desc(a, b, orderBy) {
     }
     return 0;
 }
+
+
   
