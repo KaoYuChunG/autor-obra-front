@@ -23,9 +23,11 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-
+import InputBase from '@material-ui/core/InputBase';
 import { Link } from 'react-router-dom';
+
 import { removeObras } from '../actions/obraActions';
+import { filtroObra } from '../actions/obraActions';
 import { showSnackBar } from '../actions/utilActions';
 import { isNotEmpty, stableSort, getSorting } from '../utils/utils';
 
@@ -100,14 +102,15 @@ const useToolbarStyles = makeStyles(theme => ({
           color: theme.palette.text.primary,
           backgroundColor: theme.palette.secondary.dark,
         },
-  spacer: {
-    flex: '1 1 100%',
-  },
   actions: {
     color: theme.palette.text.secondary,
   },
   title: {
     flex: '0 0 auto',
+  },
+  input: {
+    marginLeft: theme.spacing(1),
+    flex: 1,
   },
 }));
 
@@ -118,6 +121,10 @@ const EnhancedTableToolbar = props => {
 
   function handleDelete() {
     props.removeObraCallback(selected);
+  }
+
+  function handleFiltro(){
+    props.filtroAutor();
   }
 
   return (
@@ -137,7 +144,26 @@ const EnhancedTableToolbar = props => {
           </Typography>
         )}
       </div>
-      <div className={classes.spacer} />
+      <Search handleFiltro={handleFiltro}>
+        <InputBase
+          id="standard-name"
+          type="text"
+          name="name"
+          label="Name"
+          className={classes.input}
+          placeholder={'Nome'}
+          inputProps={{ 'aria-label': 'Nome' }}
+        />
+        <InputBase
+          id="standard-descricao"
+          type="text"
+          name="descricao"
+          label="Descrição"
+          className={classes.input}
+          placeholder={'Descrição'}
+          inputProps={{ 'aria-label': 'Descricao'}}
+        />
+      </Search>
       <div className={classes.actions}>
         {numSelected > 0 && (
           <Tooltip title="Delete">
@@ -226,6 +252,10 @@ function ExtendedDataTable(props) {
     props.removeObras(obraNameArr);
   }
 
+  function handleAutorFiltro(filtro) {
+    props.filtroAutor(filtro);
+  }
+
   function handleRequestSort(event, property) {
     const isDesc = orderBy === property && order === 'desc';
     setOrder(isDesc ? 'asc' : 'desc');
@@ -277,8 +307,10 @@ function ExtendedDataTable(props) {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar selected={selected} removeObraCallback={handleObraDelete} />
-        <Search label1={'Nome'} label2={'Descrição'}/>
+        <EnhancedTableToolbar selected={selected} 
+          removeObraCallback={handleObraDelete}
+          filtroAutor={handleAutorFiltro} 
+        />
         <div className={classes.tableWrapper}>
           <Table
             className={classes.table}
@@ -316,7 +348,7 @@ function ExtendedDataTable(props) {
                           inputProps={{ 'aria-labelledby': labelId }}
                         />
                       </TableCell>
-                      <TableCell component="th" align="right" id={labelId} scope="row" padding="none">
+                      <TableCell component="th" align="center" id={labelId} scope="row" padding="none">
                         {row.id}
                       </TableCell>
                       <TableCell align="left">{row.name}</TableCell>
@@ -393,4 +425,4 @@ const mapStateToProps = state => ({
     snackBarVariant: state.obras.variant
 });
 
-export default connect(mapStateToProps, { removeObras, showSnackBar })(ExtendedDataTable);
+export default connect(mapStateToProps, { removeObras, filtroObra, showSnackBar })(ExtendedDataTable);

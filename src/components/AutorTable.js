@@ -23,9 +23,11 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import InputBase from '@material-ui/core/InputBase';
 import { Link } from 'react-router-dom';
 
 import { removeAutor } from '../actions/autorActions';
+import { filtroAutor } from '../actions/autorActions';
 import { showSnackBar } from '../actions/utilActions';
 import { isNotEmpty, stableSort, getSorting } from '../utils/utils';
 
@@ -102,14 +104,15 @@ const useToolbarStyles = makeStyles(theme => ({
           color: theme.palette.text.primary,
           backgroundColor: theme.palette.secondary.dark,
         },
-  spacer: {
-    flex: '1 1 100%',
-  },
   actions: {
     color: theme.palette.text.secondary,
   },
   title: {
     flex: '0 0 auto',
+  },
+  input: {
+    marginLeft: theme.spacing(1),
+    flex: 1,
   },
 }));
 
@@ -120,6 +123,10 @@ const EnhancedTableToolbar = props => {
 
   function handleDelete() {
     props.removeAutorCallback(selected);
+  }
+
+  function handleFiltro(){
+    props.filtroAutor();
   }
 
   return (
@@ -139,7 +146,20 @@ const EnhancedTableToolbar = props => {
           </Typography>
         )}
       </div>
-      <div className={classes.spacer} />
+      <Search onClick={handleFiltro}>
+        <InputBase
+           id="standard-name"
+          className={classes.input}
+          placeholder={'Nome'}
+          inputProps={{ 'aria-label': 'Nome' }}
+        />
+        <InputBase
+          id="standard-sexo"
+          className={classes.input}
+          placeholder={'Sexo'}
+          inputProps={{ 'aria-label': 'Sexo'}}
+        />
+      </Search>
       <div className={classes.actions}>
         {numSelected > 0 && (
           <Tooltip title="Delete">
@@ -228,6 +248,10 @@ function ExtendedDataTable(props) {
     props.removeAutor(autorNameArr);
   }
 
+  function handleAutorFiltro(filtro) {
+    props.filtroAutor(filtro);
+  }
+
   function handleRequestSort(event, property) {
     const isDesc = orderBy === property && order === 'desc';
     setOrder(isDesc ? 'asc' : 'desc');
@@ -279,8 +303,11 @@ function ExtendedDataTable(props) {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar selected={selected} removeAutorCallback={handleAutorDelete} />
-        <Search label1={'Nome'} label2={'Sexo'}/>
+        <EnhancedTableToolbar selected={selected} 
+          removeAutorCallback={handleAutorDelete} 
+          filtroAutor={handleAutorFiltro}
+        />
+        
         <div className={classes.tableWrapper}>
           <Table
             className={classes.table}
@@ -318,7 +345,7 @@ function ExtendedDataTable(props) {
                           inputProps={{ 'aria-labelledby': labelId }}
                         />
                       </TableCell>
-                      <TableCell component="th" align="right" id={labelId} scope="row" padding="none">
+                      <TableCell component="th" align="center" id={labelId} scope="row" padding="none">
                         {row.id}
                       </TableCell>
                       <TableCell align="left">{row.name}</TableCell>
@@ -383,6 +410,7 @@ ExtendedDataTable.propTypes = {
     editAutor: PropTypes.array,
     deleteAutor: PropTypes.array,
     removeAutor: PropTypes.func,
+    filtroAutor: PropTypes.func, 
     showSnackBar: PropTypes.func,
     snackBarMessage: PropTypes.string,
     snackBarVariant: PropTypes.string
@@ -397,4 +425,4 @@ const mapStateToProps = state => ({
     snackBarVariant: state.autores.variant
 });
 
-export default connect(mapStateToProps, { removeAutor, showSnackBar })(ExtendedDataTable);
+export default connect(mapStateToProps, { removeAutor, filtroAutor, showSnackBar })(ExtendedDataTable);

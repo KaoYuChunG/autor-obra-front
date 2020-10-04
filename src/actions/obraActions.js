@@ -22,7 +22,7 @@ export const fetchObras = () => dispatch => {
     .catch(err => console.log(err));
 };
 
-export const filtroAutor = (data) => dispatch => {
+export const filtroObra = (data) => dispatch => {
     fetch('localhost:8080/api/obra', { data })
     .then(res => res.json())
     .then(obras => {

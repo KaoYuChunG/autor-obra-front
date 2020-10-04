@@ -60,128 +60,128 @@ class AddEditObra extends Component {
             dataExposicao: Yup.string()
               .required('Data de Exposicação é obrigatório')
           })}
-        >
-          {props => {
-            const {
-              values,
-              touched,
-              errors,
-              dirty,
-              isSubmitting,
-              handleChange,
-              handleBlur,
-              handleSubmit
-            } = props;
-            return (
-              <form
-                onSubmit={handleSubmit}
-                style={{ width: '30%', margin: 'auto' }}
-              >
-                <TextField
-                  id="standard-name"
-                  type="text"
-                  name="name"
-                  label="Name"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.name}
-                  fullWidth
-                  margin="normal"
-                  variant="outlined"
-                  required
-                />
-                {errors.name && touched.name && (
-                  <div
-                    style={{ textAlign: 'start', marginTop: '2px', color: 'red' }}
-                  >
-                    {errors.name}
-                  </div>
-                )}
-  
-                <TextField
-                  id="standard-descricao"
-                  type="text"
-                  name="descricao"
-                  label="Descrição"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.descricao}
-                  fullWidth
-                  margin="normal"
-                  variant="outlined"
-                  required
-                />
-                {errors.descricao && touched.descricao && (
-                  <div
-                    style={{ textAlign: 'start', marginTop: '2px', color: 'red' }}
-                  >
-                    {errors.descricao}
-                  </div>
-                )}
-  
-                <TextField
-                  id="standard-dataPublicacao"
-                  type="date"
-                  name="dataPublicacao"
-                  label="Data de Publicação"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.dataPublicacao}
-                  fullWidth
-                  margin="normal"
-                  variant="outlined"
-                  required
-                  format={'DD/MM/YYYY'}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                />
-                {errors.dataPublicacao && touched.dataPublicacao && (
-                  <div
-                    style={{ textAlign: 'start', marginTop: '2px', color: 'red' }}
-                  >
-                    {errors.dataPublicacao}
-                  </div>
-                )}
-  
-                <TextField
-                  id="standard-dataExposicao"
-                  type="date"
-                  name="dataExposicao"
-                  label="Data de Exposição"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.dataExposicao}
-                  fullWidth
-                  margin="normal"
-                  variant="outlined"
-                  required
-                  format={'DD/MM/YYYY'}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                />
-                {errors.dataExposicao && touched.dataExposicao && (
-                  <div
-                    style={{ textAlign: 'start', marginTop: '2px', color: 'red' }}
-                  >
-                    {errors.dataExposicao}
-                  </div>
-                )}
-  
-                <Button
-                  disabled={!dirty && !isSubmitting}
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  style={{ margin: '1em', float: 'right' }}
+          >
+            {props => {
+              const {
+                values,
+                touched,
+                errors,
+                dirty,
+                isSubmitting,
+                handleChange,
+                handleBlur,
+                handleSubmit
+              } = props;
+              return (
+                <form
+                  onSubmit={handleSubmit}
+                  style={{ width: '30%', margin: 'auto' }}
                 >
-                  {this.state.obra.edit ? 'Atualizar' : 'Salvar'}
-                </Button>
-              </form>
-            );
-          }}
-        </Formik>
+                  <TextField
+                    id="standard-name"
+                    type="text"
+                    name="name"
+                    label="Name"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.name}
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                    required
+                  />
+                  {errors.name && touched.name && (
+                    <div
+                      style={{ textAlign: 'start', marginTop: '2px', color: 'red' }}
+                    >
+                      {errors.name}
+                    </div>
+                  )}
+    
+                  <TextField
+                    id="standard-descricao"
+                    type="text"
+                    name="descricao"
+                    label="Descrição"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.descricao}
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                    required
+                  />
+                  {errors.descricao && touched.descricao && (
+                    <div
+                      style={{ textAlign: 'start', marginTop: '2px', color: 'red' }}
+                    >
+                      {errors.descricao}
+                    </div>
+                  )}
+    
+                  <TextField
+                    id="standard-dataPublicacao"
+                    type="date"
+                    name="dataPublicacao"
+                    label="Data de Publicação"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.dataPublicacao}
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                    required
+                    format={'DD/MM/YYYY'}
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                  />
+                  {errors.dataPublicacao && touched.dataPublicacao && (
+                    <div
+                      style={{ textAlign: 'start', marginTop: '2px', color: 'red' }}
+                    >
+                      {errors.dataPublicacao}
+                    </div>
+                  )}
+    
+                  <TextField
+                    id="standard-dataExposicao"
+                    type="date"
+                    name="dataExposicao"
+                    label="Data de Exposição"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.dataExposicao}
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                    required
+                    format={'DD/MM/YYYY'}
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                  />
+                  {errors.dataExposicao && touched.dataExposicao && (
+                    <div
+                      style={{ textAlign: 'start', marginTop: '2px', color: 'red' }}
+                    >
+                      {errors.dataExposicao}
+                    </div>
+                  )}
+    
+                  <Button
+                    disabled={!dirty && !isSubmitting}
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    style={{ margin: '1em', float: 'right' }}
+                  >
+                    {this.state.obra.edit ? 'Atualizar' : 'Salvar'}
+                  </Button>
+                </form>
+              );
+            }}
+          </Formik>
         <SnackBar
           open={this.state.open}
           handleClose={this.handleClose}
