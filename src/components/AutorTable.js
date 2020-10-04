@@ -22,7 +22,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
-import FilterListIcon from '@material-ui/icons/FilterList';
 import EditIcon from '@material-ui/icons/Edit';
 import { Link } from 'react-router-dom';
 
@@ -142,16 +141,10 @@ const EnhancedTableToolbar = props => {
       </div>
       <div className={classes.spacer} />
       <div className={classes.actions}>
-        {numSelected > 0 ? (
+        {numSelected > 0 && (
           <Tooltip title="Delete">
             <IconButton onClick={handleDelete} aria-label="delete">
               <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title="Filtro">
-            <IconButton aria-label="Filtro">
-              <FilterListIcon />
             </IconButton>
           </Tooltip>
         )}
@@ -286,8 +279,8 @@ function ExtendedDataTable(props) {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <Search label1={'Nome'} label2={'Sexo'}/>
         <EnhancedTableToolbar selected={selected} removeAutorCallback={handleAutorDelete} />
+        <Search label1={'Nome'} label2={'Sexo'}/>
         <div className={classes.tableWrapper}>
           <Table
             className={classes.table}
