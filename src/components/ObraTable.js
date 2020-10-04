@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import SnackBar from './SnackBar';
+import Search  from './Search';
 
 import { connect } from 'react-redux';
 
@@ -283,6 +284,7 @@ function ExtendedDataTable(props) {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
+        <Search label1={'Nome'} label2={'Descrição'}/>
         <EnhancedTableToolbar selected={selected} removeObraCallback={handleObraDelete} />
         <div className={classes.tableWrapper}>
           <Table

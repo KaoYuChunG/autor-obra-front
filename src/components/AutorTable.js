@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import SnackBar from './SnackBar';
+import Search  from './Search';
 
 import { connect } from 'react-redux';
 
@@ -23,8 +24,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import EditIcon from '@material-ui/icons/Edit';
-
 import { Link } from 'react-router-dom';
+
 import { removeAutor } from '../actions/autorActions';
 import { showSnackBar } from '../actions/utilActions';
 import { isNotEmpty, stableSort, getSorting } from '../utils/utils';
@@ -285,6 +286,7 @@ function ExtendedDataTable(props) {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
+        <Search label1={'Nome'} label2={'Sexo'}/>
         <EnhancedTableToolbar selected={selected} removeAutorCallback={handleAutorDelete} />
         <div className={classes.tableWrapper}>
           <Table

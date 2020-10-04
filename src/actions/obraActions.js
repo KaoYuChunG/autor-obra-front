@@ -3,9 +3,9 @@ import { FETCH_OBRA, ADD_OBRA, EDIT_OBRA, DELETE_OBRA } from "./types";
 export const fetchObras = () => dispatch => {
     fetch('localhost:8080/api/obra')
     .then(res => res.json())
-    .then(users => {
-        users = users.map(user => {
-            const { id, name, descricao, dataPublicacao, dataExposicao } = user;
+    .then(obras => {
+        obras = obras.map(obra => {
+            const { id, name, descricao, dataPublicacao, dataExposicao } = obra;
             return {
                 id,
                 name,
@@ -16,7 +16,29 @@ export const fetchObras = () => dispatch => {
         });
         dispatch({
             type: FETCH_OBRA,
-            payload: users
+            payload: obras
+        });
+    })
+    .catch(err => console.log(err));
+};
+
+export const filtroAutor = (data) => dispatch => {
+    fetch('localhost:8080/api/obra', { data })
+    .then(res => res.json())
+    .then(obras => {
+        obras = obras.map(obra => {
+            const { id, name, descricao, dataPublicacao, dataExposicao } = obra;
+            return {
+                id,
+                name,
+                descricao,
+                dataPublicacao,
+                dataExposicao
+            };
+        });
+        dispatch({
+            type: FETCH_OBRA,
+            payload: obras
         });
     })
     .catch(err => console.log(err));

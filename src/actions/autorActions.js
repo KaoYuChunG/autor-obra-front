@@ -38,6 +38,30 @@ export const addEdit = (data) => dispatch => {
     }
 };
 
+export const filtroAutor = (data) => dispatch => {
+    fetch('localhost:8080/api/autor', { data })
+    .then(res => res.json())
+    .then(autores => {
+        autores = autores.map(autor => {
+            const { id, name, email, sexo, pais, dataNascimento, cpf } = autor;
+            return {
+                id,
+                name,
+                email,
+                sexo,
+                pais,
+                dataNascimento,
+                cpf
+            };
+        });
+        dispatch({
+            type: FETCH_AUTOR,
+            payload: autores
+        });
+    })
+    .catch(err => console.log(err));
+};
+
 export const removeAutor = (autorNameArr) => dispatch => {
     dispatch({
         type: DELETE_AUTOR,
