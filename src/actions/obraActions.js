@@ -1,7 +1,7 @@
 import { FETCH_OBRA, ADD_OBRA, EDIT_OBRA, DELETE_OBRA } from "./types";
 
 export const fetchObras = () => dispatch => {
-    fetch('localhost:8080/api/obra')
+    fetch('http://localhost:8080/api/obra')
     .then(res => res.json())
     .then(obras => {
         obras = obras.map(obra => {
@@ -23,7 +23,7 @@ export const fetchObras = () => dispatch => {
 };
 
 export const filtroObra = (data) => dispatch => {
-    fetch('localhost:8080/api/obra', { data })
+    fetch('http://localhost:8080/api/obra', { data })
     .then(res => res.json())
     .then(obras => {
         obras = obras.map(obra => {

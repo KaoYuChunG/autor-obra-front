@@ -1,7 +1,7 @@
 import { FETCH_AUTOR, ADD_AUTOR, EDIT_AUTOR, DELETE_AUTOR } from "./types";
 
 export const fetchAutores = () => dispatch => {
-    fetch('localhost:8080/api/autor')
+    fetch('http://localhost:8080/api/autor')
     .then(res => res.json())
     .then(autores => {
         autores = autores.map(autor => {
@@ -39,7 +39,7 @@ export const addEdit = (data) => dispatch => {
 };
 
 export const filtroAutor = (data) => dispatch => {
-    fetch('localhost:8080/api/autor', { data })
+    fetch('http://localhost:8080/api/autor', { data })
     .then(res => res.json())
     .then(autores => {
         autores = autores.map(autor => {
